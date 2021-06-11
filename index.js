@@ -4,6 +4,20 @@ var taskText = document.getElementById("task-text");
 var addBtn = document.getElementById("addBtn");
 var taskItems = document.getElementById("task-wrapper");
 var deleteIcon = document.getElementsByClassName("fa-trash");
+var monthArr = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
 
 var task = "";
 var id = 0;
@@ -30,6 +44,10 @@ var createnewTaskText = () => {
     deleteIcon.onclick = function () {
       newDiv.parentNode.removeChild(newDiv);
     };
+    var dateText = document.createElement("p");
+    dateText.className = "date-time-text";
+    addDate(dateText);
+    newDiv.appendChild(dateText);
     taskItems.appendChild(newDiv);
     id++;
     taskText.value = "";
@@ -39,3 +57,17 @@ var createnewTaskText = () => {
 addBtn.addEventListener("click", function () {
   createnewTaskText();
 });
+
+var addDate = (dateText) => {
+  var date = new Date();
+  dateText.innerHTML =
+    date.getDate() +
+    "-" +
+    monthArr[date.getMonth()] +
+    "-" +
+    date.getFullYear() +
+    "           " +
+    date.getHours() +
+    ":" +
+    date.getMinutes();
+};
