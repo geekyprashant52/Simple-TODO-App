@@ -21,24 +21,44 @@ var monthArr = [
 
 var task = "";
 var id = 0;
+let taskArr = [];
 
-taskText.addEventListener("keyup", function (e) {
-  if (e.keyCode === 13) {
-    createnewTaskText();
-  }
-});
+let getDate = () => {
+  var date = new Date();
+  let resultDate =
+    date.getDate() +
+    "-" +
+    monthArr[date.getMonth()] +
+    "-" +
+    date.getFullYear() +
+    " " +
+    date.getHours() +
+    ":" +
+    date.getMinutes();
+  return resultDate;
+};
 
-var createnewTaskText = () => {
-  if ((taskText.value + "").trim().length === 0) {
+let addDate = (dateText, date) => {
+  dateText.innerHTML = date;
+};
+
+let addDataToStorage = (obj) => {
+  localStorage.setItem("taskArr", JSON.stringify(obj));
+  //console.log(JSON.parse(localStorage.getItem("taskArr")));
+};
+
+let createnewTaskText = (taskFn, dateFn) => {
+  if ((taskFn + "").trim().length === 0) {
     alert("Nothing to add!");
   } else {
     var newDiv = document.createElement("div");
     newDiv.className = "task-items";
     var heading = document.createElement("h1");
-    heading.innerHTML = taskText.value;
+    heading.innerHTML = taskFn;
     newDiv.appendChild(heading);
     var deleteIcon = document.createElement("i");
     deleteIcon.className = "fas fa-trash";
+    deleteIcon.id = id;
     newDiv.id = "task" + id;
     newDiv.appendChild(deleteIcon);
     deleteIcon.onclick = function () {
@@ -46,28 +66,89 @@ var createnewTaskText = () => {
     };
     var dateText = document.createElement("p");
     dateText.className = "date-time-text";
-    addDate(dateText);
+    addDate(dateText, dateFn);
     newDiv.appendChild(dateText);
     taskItems.appendChild(newDiv);
     id++;
     taskText.value = "";
+    let obj = {
+      task: heading.innerHTML,
+      date: dateText.innerHTML,
+    };
+    taskArr.push(obj);
+    addDataToStorage(taskArr);
+    //console.log(taskItems);
   }
 };
 
-addBtn.addEventListener("click", function () {
-  createnewTaskText();
+let showDataOnly = (task, date) => {
+  if ((task + "").trim().length === 0) {
+    alert("Nothing to add!");
+  } else {
+    var newDiv = document.createElement("div");
+    newDiv.className = "task-items";
+    var heading = document.createElement("h1");
+    heading.innerHTML = task;
+    newDiv.appendChild(heading);
+    var deleteIcon = document.createElement("i");
+    deleteIcon.className = "fas fa-trash";
+    deleteIcon.id = id;
+    newDiv.id = "task" + id;
+    newDiv.appendChild(deleteIcon);
+    deleteIcon.onclick = function () {
+      newDiv.parentNode.removeChild(newDiv);
+      console.log("Node deleted: " + deleteIcon.id);
+    };
+    var dateText = document.createElement("p");
+    dateText.className = "date-time-text";
+    addDate(dateText, date);
+    newDiv.appendChild(dateText);
+    taskItems.appendChild(newDiv);
+    id++;
+    taskText.value = "";
+    // let obj = {
+    //   task: heading.innerHTML,
+    //   date: dateText.innerHTML,
+    // };
+    // taskArr.push(obj);
+    // addDataToStorage(taskArr);
+  }
+};
+
+let checkDataFromStorage = () => {
+  let storedData = JSON.parse(localStorage.getItem("taskArr"));
+  if (storedData != null) {
+    if (storedData.length > 0) {
+      taskArr = [];
+      taskArr = storedData;
+      // taskArr.map((item) => {
+      //   console.log(item.task, item.date);
+      //   createnewTaskText(item.task, item.date);
+      // });
+      taskArr.map((item) => {
+        if (storedData.indexOf(item) == -1) {
+          //console.log("No Duplicates found");
+        } else {
+          //console.log("Duplicate data found");
+          showDataOnly(item.task, item.date);
+        }
+      });
+    } else {
+      //console.log("Data Not Found in Database");
+    }
+  } else {
+    localStorage.setItem("taskArr", JSON.stringify(taskArr));
+  }
+};
+
+checkDataFromStorage();
+
+taskText.addEventListener("keyup", function (e) {
+  if (e.keyCode === 13) {
+    createnewTaskText(taskText.value, getDate());
+  }
 });
 
-var addDate = (dateText) => {
-  var date = new Date();
-  dateText.innerHTML =
-    date.getDate() +
-    "-" +
-    monthArr[date.getMonth()] +
-    "-" +
-    date.getFullYear() +
-    "           " +
-    date.getHours() +
-    ":" +
-    date.getMinutes();
-};
+addBtn.addEventListener("click", function () {
+  createnewTaskText(taskText.value, getDate());
+});

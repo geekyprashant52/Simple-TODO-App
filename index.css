@@ -81,12 +81,12 @@ main {
   border-radius: 8px;
   box-sizing: border-box;
   position: relative;
-  padding-bottom: 2rem;
 }
 .task-items h1 {
   font-size: 1.8rem;
   font-weight: 400;
   margin-right: 10px;
+  margin-bottom: 1.4rem;
 }
 .task-items i {
   color: var(--purple-color);
@@ -95,9 +95,13 @@ main {
 
 .date-time-text {
   position: absolute;
-  bottom: 0;
+  bottom: 10px;
   font-size: 1.2rem;
   font-style: italic;
+}
+
+.greenColoricon {
+  background-color: green;
 }
 
 @media (min-width: 768px) {
